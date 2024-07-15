@@ -45,6 +45,14 @@ export const SearchButton = styled.button`
   }
 `;
 
+export const SpinnerDiv = styled.div`
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+`
 
 export const ProductItem = styled.li`
   list-style: none;

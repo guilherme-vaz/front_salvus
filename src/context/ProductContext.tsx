@@ -4,6 +4,7 @@ import { IProduct } from '../interfaces/Product';
 
 interface ProductContextProps {
     products: IProduct[];
+    loading: boolean;
     fetchProducts: () => void;
     addProduct: (product: Omit<IProduct, 'id'>) => void;
     editProduct: (id: number, product: Omit<IProduct, 'id'>) => void;
@@ -18,10 +19,19 @@ const ProductContext = createContext<ProductContextProps | undefined>(undefined)
 
 export function ProductProvider({ children }: ProductProviderProps) {
     const [products, setProducts] = useState<IProduct[]>([]);
+    const [loading, setLoading] = useState(false);
 
     const fetchProducts = async () => {
-        const response = await getProducts();
-        setProducts(response.data);
+        setLoading(true);
+        try {
+            const response = await getProducts();
+            setProducts(response.data);
+        } catch (error) {
+            console.error('Erro ao buscar produtos:', error);
+        } finally {
+            setLoading(false);
+        }
+        
     };
 
     const addProduct = async (product: Omit<IProduct, 'id'>) => {
@@ -44,7 +54,7 @@ export function ProductProvider({ children }: ProductProviderProps) {
     }, []);
 
     return (
-        <ProductContext.Provider value={{ products, fetchProducts, addProduct, editProduct, removeProduct }}>
+        <ProductContext.Provider value={{ products, loading, fetchProducts, addProduct, editProduct, removeProduct }}>
             {children}
         </ProductContext.Provider>
     );
